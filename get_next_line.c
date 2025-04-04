@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-char    *get_line(char  *saved)
+char	*get_line(char *saved)
 {
 	int		i;
 	char	*text;
@@ -40,9 +40,9 @@ char    *get_line(char  *saved)
 	return (text);
 }
 
-char    *update_saved(char *saved)
+char	*update_saved(char *saved)
 {
-    char	*new_saved;
+	char	*new_saved;
 	int		i;
 	int		j;
 
@@ -81,19 +81,15 @@ char	*read_and_save(int fd, char *saved)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read < 0)
-		{
-			free(buffer);
-			return (NULL);
-		}
+			return (free(buffer), NULL);
 		if (bytes_read == 0)
-			break;
+			break ;
 		buffer[bytes_read] = '\0';
 		temp = ft_strjoin(saved, buffer);
 		free(saved);
 		saved = temp;
 	}
-	free(buffer);
-	return (saved);
+	return (free(buffer), saved);
 }
 
 char	*get_next_line(int fd)
@@ -103,13 +99,10 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	
 	saved = read_and_save(fd, saved);
 	if (!saved)
 		return (NULL);
-
 	line = get_line(saved);
 	saved = update_saved(saved);
-
 	return (line);
 }
