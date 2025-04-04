@@ -23,6 +23,7 @@
 char    *get_next_line(int fd);
 char    *get_line(char  *saved);
 char    *update_saved(char *saved);
+char	*read_and_save(int fd, char *saved);
 size_t	ft_strlen(const	char *str);
 char	*ft_strchr(const char *s, int c);
 char    *ft_strdup(const char *src);

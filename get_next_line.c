@@ -54,7 +54,7 @@ char    *update_saved(char *saved)
 		free(saved);
 		return (NULL);
 	}
-	new_saved = (char *)malloc(ft_strlen(saved) - i);
+	new_saved = (char *)malloc(ft_strlen(saved) - i + 1);
 	if (!new_saved)
 		return (NULL);
 	j = 0;
@@ -75,6 +75,8 @@ char	*read_and_save(int fd, char *saved)
 	buffer = (char *)malloc(BUFFER_SIZE + 1);
 	if (!buffer)
 		return (NULL);
+	if (!saved)
+		saved = ft_strdup("");
 	while (!ft_strchr(saved, '\n'))
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
