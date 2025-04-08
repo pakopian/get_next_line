@@ -81,7 +81,7 @@ char	*read_and_save(int fd, char *saved)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read < 0)
-			return (free(buffer), NULL);
+			return (free(buffer), free(saved), NULL);
 		if (bytes_read == 0)
 			break ;
 		buffer[bytes_read] = '\0';
