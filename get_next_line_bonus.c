@@ -57,26 +57,28 @@ static char	*update_saved(char *saved)
 
 static char	*read_and_save(int fd, char *saved)
 {
-	char	buffer[BUFFER_SIZE + 1];
+	char	*buffer;
 	char	*temp;
 	int		bytes_read;
 
+	buffer = (char *)malloc(BUFFER_SIZE + 1);
 	if (!saved)
 		saved = ft_strdup("");
 	while (!ft_strchr(saved, '\n'))
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read < 0)
-			return (free(saved), NULL);
+			return (free(saved), free(buffer), NULL);
 		if (bytes_read == 0)
 			break ;
 		buffer[bytes_read] = '\0';
 		temp = ft_strjoin(saved, buffer);
 		if (!temp)
-			return (free(saved), NULL);
+			return (free(saved), free(buffer), NULL);
 		free(saved);
 		saved = temp;
 	}
+	free(buffer);
 	if (!*saved)
 		return (free(saved), NULL);
 	return (saved);
@@ -86,9 +88,18 @@ char	*get_next_line(int fd)
 {
 	static char	*saved[4096];
 	char		*line;
+	int			i;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
+	{
+		i = 3;
+		while (i < 4096)
+		{
+			free(saved[i]);
+			i++;
+		}
 		return (NULL);
+	}
 	saved[fd] = read_and_save(fd, saved[fd]);
 	if (!saved[fd])
 		return (NULL);
