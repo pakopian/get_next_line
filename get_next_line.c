@@ -24,6 +24,8 @@ static char	*get_line(char *saved)
 		i++;
 	if (saved[i] == '\n')
 		i++;
+	if (i == 0)
+		return (NULL);
 	text = (char *)malloc(i + 1);
 	if (!text)
 		return (NULL);
@@ -44,18 +46,16 @@ static char	*update_saved(char *saved)
 	char	*new_saved;
 	int		i;
 
-	if (!saved)
-		return (NULL);
 	i = 0;
 	while (saved[i] && saved[i] != '\n')
 		i++;
 	if (!saved[i])
 		return (free(saved), NULL);
 	i++;
-	if (!saved[i])
-		return (free(saved), NULL);
 	new_saved = ft_strdup(saved + i);
 	free(saved);
+	if (!new_saved || !*new_saved)
+		return (free(new_saved), NULL);
 	return (new_saved);
 }
 
@@ -70,8 +70,6 @@ static char	*read_and_save(int fd, char *saved)
 		return (NULL);
 	if (!saved)
 		saved = ft_strdup("");
-	if (!saved)
-		return (free(buffer), NULL);
 	while (!ft_strchr(saved, '\n'))
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
@@ -87,8 +85,6 @@ static char	*read_and_save(int fd, char *saved)
 		saved = temp;
 	}
 	free(buffer);
-	if (!*saved)
-		return (free(saved), NULL);
 	return (saved);
 }
 
@@ -98,15 +94,15 @@ char	*get_next_line(int fd)
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
-	{
-		free(saved);
 		return (NULL);
-	}
 	saved = read_and_save(fd, saved);
 	if (!saved)
-		return (saved = NULL, NULL);
+		return (NULL);
+	if (*saved == '\0')
+		return (free(saved), saved = NULL, NULL);
 	line = get_line(saved);
 	if (!line)
 		return (free(saved), saved = NULL, NULL);
-	return (saved = update_saved(saved), line);
+	saved = update_saved(saved);
+	return (line);
 }
